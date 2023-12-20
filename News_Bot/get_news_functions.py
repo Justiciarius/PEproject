@@ -32,10 +32,10 @@ async def get_latest_news(categories):
         current_datetime = datetime.now()
 
         # Текущее время минус 3 часа
-        past_datetime = current_datetime - timedelta(hours=3)
+        past_datetime = current_datetime - timedelta(hours=1)
 
         if conditions:
-            query = f"{query} WHERE {' OR '.join(conditions)} AND pubDate > '2023-12-18 10:00:00';"
+            query = f"{query} WHERE {' OR '.join(conditions)} AND pubDate > '{past_datetime}';"
 
         cursor.execute(query)
         latest_news = cursor.fetchall()
