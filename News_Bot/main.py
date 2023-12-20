@@ -3,7 +3,6 @@ import logging
 
 import aiogram
 import psycopg2
-import requests
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 
@@ -23,7 +22,7 @@ async def cmd_start(message: types.Message):
 
 @dp.message(Command("info"))
 async def cmd_info(message: types.Message):
-    await message.answer("Я отправляю новости))")
+    await message.answer("Данный бот создан чтобы обеспечивать Вас актуальными новостями по интересующим тематикам. Вы можете настроить категории используя команду /my_categories, и бот будет отправлять Вам статьи каждый час в формате текстовых сообщений со ссылкой на источник. Для старта рассылки используйте команду /start_send_news, для остановки рассылки /stop_send_news. Вы также можете запросить новости по ключевым словам с помощью команды /news_by_key.")
 
 
 @dp.message(Command("news_by_key"))
@@ -126,8 +125,11 @@ async def my_categories(message: types.Message):
 async def my_categories_set(callback_query: types.CallbackQuery):
 
     id = callback_query.message.chat.id
-    await bot.send_message(id, f"Ваши категории: {', '.join(user_categories[id])}")
-    # Выкидывает ошибку если пусто в категориях :((((
+    if user_categories.get(id):  # Check if the list is not empty
+        await bot.send_message(id, f"Ваши категории: {', '.join(user_categories[id])}")
+    else:
+        await bot.send_message(id, "У вас пока нет выбранных категорий.")
+
 
 @dp.callback_query(lambda c: c.data.startswith('category_'))
 async def categories_buttons(callback_query: types.CallbackQuery):
