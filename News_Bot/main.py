@@ -32,11 +32,11 @@ async def cmd_news_by_key(message: types.Message):
         "Отлично! Начни сообщение как \"Ключ:\" и напиши ключ, по которому хочешь найти последние новости.")
 
 
-@dp.message(lambda message: message.text.startswith('Ключ:'))
+@dp.message(lambda message: message.text.lower().startswith('ключ:'))
 async def process_keywords(message: types.Message):
     # Извлекаем ключевые слова из текста сообщения
     global conn, cursor
-    key_words = message.text.split('Ключ: ')[1:]
+    key_words = message.text.lower().split('ключ: ')[1:]
     await message.answer(f"Принял ключ: {key_words[0]}.")
     await message.answer(f"Ищу новости...")
     try:
@@ -160,6 +160,10 @@ async def stop_send_news(message: types.Message):
     # Прекращаем отправку новостей
     send_news_enabled = False
     await message.answer("Останавливаю рассылку. Возвращайтесь к нам после настройки!")
+
+@dp.message()
+async def handle_random_text(message: types.Message):
+    await message.answer("К сожалению, я вас не понимаю. Прочитайте информацию о работе бота по команде /info")
 
 async def main():
     await dp.start_polling(bot)

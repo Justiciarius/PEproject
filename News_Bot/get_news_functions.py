@@ -31,7 +31,7 @@ async def get_latest_news(categories):
 
         current_datetime = datetime.now()
 
-        # Текущее время минус 3 часа
+        # Текущее время минус 3 часа                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
         past_datetime = current_datetime - timedelta(hours=1)
 
         if conditions:

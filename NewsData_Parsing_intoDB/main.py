@@ -35,6 +35,10 @@ def insert_article_toBD(article_id, title,link,keywords,creator,description,cont
                             password= db_password)
         cursor = conn.cursor()
 
+        if keywords:
+            for key in keywords:
+                key = key.lower()
+
         # Добавляем запись в бд
         # Запрс такой: Добавляем в запись, если конфликт по id, тогда ничего не делаем. Тогда добавляются уникальные статьи только
         insert_query = """INSERT INTO news_articles(article_id,title, link, keywords, creator, description, content, country, category, language,pubDate) VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s,%s) ON conflict(article_id) do nothing;"""
@@ -89,7 +93,7 @@ if __name__ == '__main__':
                     time.sleep(900)
             except Exception as e:
                 print(f"Exception catched: {e}")
-                time.sleep(900)
+                time.sleep(60)
 
 
 
