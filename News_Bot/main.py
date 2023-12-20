@@ -51,11 +51,9 @@ async def process_keywords(message: types.Message):
         if (news_by_key):
             for curr_news in news_by_key:
                 if curr_news:
-                    news_message = f"Заголовок: {curr_news[0]}"
-                    news_message += f"\nДата публикации: {curr_news[1]}"
-                    news_message += f"\nКатегория: {curr_news[2]}"
-                    news_message += f"\n\nСодержание: {curr_news[3]}"
-                    news_message += f"\nСсылка на статью: {curr_news[4]}"
+                    news_message = f"{curr_news[0]}"
+                    news_message += f"\n\n{curr_news[3]}"
+                    news_message += f"\n\nСсылка на статью: {curr_news[4]}"
 
                     await bot.send_message(message.chat.id, news_message)
         else:

@@ -1,14 +1,8 @@
 import configparser
+import time
+
 import psycopg2
 import requests
-
-db_params = {
-    'host': 'localhost',
-    'port': '5432',
-    'database': 'news',
-    'user': 'postgres',
-    'password': 'superuser',
-}
 
 global global_config
 global_config = None
@@ -57,39 +51,45 @@ def insert_article_toBD(article_id, title,link,keywords,creator,description,cont
         if conn:
             cursor.close()
             conn.close()
-            print("Соединение с базой данных закрыто.")
+            print("News added.")
 
 
 if __name__ == '__main__':
-    api_url = "https://newsdata.io/api/1/news?apikey=pub_309362a0eee274b94757fdb8cdf4e887046a4"
+        api_url = "https://newsdata.io/api/1/news?apikey=pub_34930c60efa50c9ba393d9c4b54fe9c96be12&timeframe=15m&timezone=Europe/Moscow"
 
     # Запрос с параметрами - нам нужны только новости на русском
-    params = {
-        'language': 'ru'
-    }
-    while(True):
-        # Отправялем запросы на сервер раз час???7
-        # time.sleep(3600)??????
-        response = requests.get(url=api_url, params=params)
-        news_data = response.json()
+        params = {
+            'language': 'ru'
+        }
+        while(True):
+            try:
+                # Отправялем запросы на сервер раз час???7
+                # time.sleep(3600)??????
+                response = requests.get(url=api_url, params=params)
+                news_data = response.json()
 
-        # Перебираем полученный json-файл
-        for news_item in news_data['results']:
-            article_id = news_item.get('article_id')
-            title = news_item.get('title')
-            link = news_item.get('link')
-            keywords = news_item.get('keywords')
-            creator = news_item.get('creator')
-            description = news_item.get('description')
-            content = news_item.get('content')
-            country = news_item.get('country')
-            category = news_item.get('category')
-            language = news_item.get('language')
-            pubDate = news_item.get('pubDate')
+                # Перебираем полученный json-файл
+                for news_item in news_data['results']:
+                    article_id = news_item.get('article_id')
+                    title = news_item.get('title')
+                    link = news_item.get('link')
+                    keywords = news_item.get('keywords')
+                    creator = news_item.get('creator')
+                    description = news_item.get('description')
+                    content = news_item.get('content')
+                    country = news_item.get('country')
+                    category = news_item.get('category')
+                    language = news_item.get('language')
+                    pubDate = news_item.get('pubDate')
 
-            # Добавляем статьи в БД
-            # P.S. Наверное, не очень хорошо, что каждую итерацию подключение открывается и закрывается
-            insert_article_toBD(article_id,title,link,keywords,creator,description,content,country,category,language,pubDate)
+                    # Добавляем статьи в БД
+                    # P.S. Наверное, не очень хорошо, что каждую итерацию подключение открывается и закрывается
+                    insert_article_toBD(article_id,title,link,keywords,creator,description,content,country,category,language,pubDate)
+
+                    time.sleep(900)
+            except Exception as e:
+                print(f"Exception catched: {e}")
+                time.sleep(900)
 
 
 
