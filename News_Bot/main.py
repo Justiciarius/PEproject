@@ -18,7 +18,6 @@ user_categories = {}
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
-    # новости отправляются в чат с ботом
     await message.answer("Привет! Я бот-парсер новостей.")
 
 @dp.message(Command("info"))

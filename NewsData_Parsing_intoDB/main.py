@@ -39,7 +39,6 @@ def insert_article_toBD(article_id, title,link,keywords,creator,description,cont
             keywords = [key.lower() for key in keywords]
 
         # Добавляем запись в бд
-        # Запрс такой: Добавляем в запись, если конфликт по id, тогда ничего не делаем. Тогда добавляются уникальные статьи только
         insert_query = """INSERT INTO news_articles(article_id,title, link, keywords, creator, description, content, country, category, language,pubDate) VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s,%s) ON conflict(article_id) do nothing;"""
 
         # Выполнение запроса с данными новой записи
@@ -60,14 +59,11 @@ def insert_article_toBD(article_id, title,link,keywords,creator,description,cont
 if __name__ == '__main__':
         api_url = "https://newsdata.io/api/1/news?apikey=pub_35073ff8abdeb696be3aabe97c0e79a89e69c&timeframe=15m&timezone=Europe/Moscow"
 
-    # Запрос с параметрами - нам нужны только новости на русском
         params = {
             'language': 'ru'
         }
         while(True):
             try:
-                # Отправялем запросы на сервер раз час???7
-                # time.sleep(3600)??????
                 response = requests.get(url=api_url, params=params)
                 news_data = response.json()
 
@@ -86,7 +82,6 @@ if __name__ == '__main__':
                     pubDate = news_item.get('pubDate')
 
                     # Добавляем статьи в БД
-                    # P.S. Наверное, не очень хорошо, что каждую итерацию подключение открывается и закрывается
                     insert_article_toBD(article_id,title,link,keywords,creator,description,content,country,category,language,pubDate)
 
                     time.sleep(900)
