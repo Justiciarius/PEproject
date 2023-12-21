@@ -36,8 +36,7 @@ def insert_article_toBD(article_id, title,link,keywords,creator,description,cont
         cursor = conn.cursor()
 
         if keywords:
-            for key in keywords:
-                key = key.lower()
+            keywords = [key.lower() for key in keywords]
 
         # Добавляем запись в бд
         # Запрс такой: Добавляем в запись, если конфликт по id, тогда ничего не делаем. Тогда добавляются уникальные статьи только
@@ -59,7 +58,7 @@ def insert_article_toBD(article_id, title,link,keywords,creator,description,cont
 
 
 if __name__ == '__main__':
-        api_url = "https://newsdata.io/api/1/news?apikey=pub_34930c60efa50c9ba393d9c4b54fe9c96be12&timeframe=15m&timezone=Europe/Moscow"
+        api_url = "https://newsdata.io/api/1/news?apikey=pub_35073ff8abdeb696be3aabe97c0e79a89e69c&timeframe=15m&timezone=Europe/Moscow"
 
     # Запрос с параметрами - нам нужны только новости на русском
         params = {

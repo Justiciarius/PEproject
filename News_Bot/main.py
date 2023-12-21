@@ -6,6 +6,7 @@ import psycopg2
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 
+from News_Bot.connection_to_Database import connectdb
 from get_news_functions import send_latest_news_periodically
 
 logging.basicConfig(level=logging.INFO)
@@ -39,7 +40,7 @@ async def process_keywords(message: types.Message):
     await message.answer(f"Принял ключ: {key_words[0]}.")
     await message.answer(f"Ищу новости...")
     try:
-        conn = psycopg2.connect(host='localhost', port=5432, database='news', user='postgres', password='superuser')
+        conn = connectdb()
         cursor = conn.cursor()
 
         query = "SELECT title, pubDate, category,content, link FROM news_articles WHERE keywords @> %s"
@@ -68,8 +69,6 @@ async def process_keywords(message: types.Message):
             conn.close()
         if cursor:
             cursor.close()
-
-
 
 
 @dp.callback_query(lambda c: c.data.startswith('my_categories_add'))
@@ -137,7 +136,7 @@ async def categories_buttons(callback_query: types.CallbackQuery):
     id = callback_query.message.chat.id
     if id not in user_categories:
         user_categories[id] = set()
-    if category_text in user_categories[id]:
+    if category_text in user_categories.get(id):
         user_categories[id].remove(category_text)
         await bot.send_message(id, f"Вы отписались от категории: {category_text}")
     else:
@@ -174,5 +173,5 @@ async def main():
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main())
-    loop.run_forever()
+    # loop.run_forever()
 
